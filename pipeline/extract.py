@@ -52,14 +52,21 @@ def _init_clients():
             "model": LLM_MODEL_GROQ,
             "name": "groq",
         })
+        logger.info("Groq client initialized")
+    else:
+        logger.warning("GROQ_API_KEY not set — skipping Groq client")
     if CEREBRAS_API_KEY:
         _CLIENTS.append({
             "client": OpenAI(api_key=CEREBRAS_API_KEY, base_url="https://api.cerebras.ai/v1/"),
             "model": LLM_MODEL_CEREBRAS,
             "name": "cerebras",
         })
+        logger.info("Cerebras client initialized")
+    else:
+        logger.warning("CEREBRAS_API_KEY not set — skipping Cerebras client")
     if not _CLIENTS:
         raise RuntimeError("No LLM API keys configured (GROQ_API_KEY / CEREBRAS_API_KEY)")
+    logger.info("LLM clients ready: %s", ", ".join(c["name"] for c in _CLIENTS))
 
 
 def _get_next_client() -> Dict:
@@ -73,23 +80,31 @@ def llm_call(messages, temperature=0.3, max_tokens=5000) -> str:
     _init_clients()
     primary = _get_next_client()
     try:
+        logger.info("LLM call using %s (%s)", primary["name"], primary["model"])
         resp = primary["client"].chat.completions.create(
             model=primary["model"],
             messages=messages,
             temperature=temperature,
             max_tokens=max_tokens,
         )
+        logger.info("%s succeeded", primary["name"])
         return resp.choices[0].message.content.strip()
     except Exception as e:
-        logger.warning("%s failed (%s), retrying with next client...", primary["name"], str(e)[:60])
+        logger.error("%s FAILED: %s", primary["name"], str(e)[:120])
         fallback = _get_next_client()
-        resp = fallback["client"].chat.completions.create(
-            model=fallback["model"],
-            messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        return resp.choices[0].message.content.strip()
+        logger.info("Retrying with %s (%s)...", fallback["name"], fallback["model"])
+        try:
+            resp = fallback["client"].chat.completions.create(
+                model=fallback["model"],
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+            logger.info("%s succeeded (fallback)", fallback["name"])
+            return resp.choices[0].message.content.strip()
+        except Exception as e2:
+            logger.error("%s FAILED (fallback): %s", fallback["name"], str(e2)[:120])
+            raise
 
 
 # ── Extraction prompt ─────────────────────────────────────────────────

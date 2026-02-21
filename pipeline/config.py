@@ -29,7 +29,7 @@ DB_CONFIG = {
 }
 
 # ── LLM ────────────────────────────────────────────────────────────────
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", os.getenv("grok_api"))
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY", os.getenv("cerebras_api"))
 LLM_MODEL_GROQ = "openai/gpt-oss-120b"
 LLM_MODEL_CEREBRAS = "gpt-oss-120b"
