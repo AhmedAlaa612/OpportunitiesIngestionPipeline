@@ -9,6 +9,7 @@ on:
 jobs:
   ingest:
     runs-on: ubuntu-latest
+    environment: secrets
     timeout-minutes: 60
 
     steps:
