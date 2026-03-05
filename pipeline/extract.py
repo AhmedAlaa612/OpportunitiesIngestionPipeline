@@ -120,19 +120,16 @@ IMPORTANT: Extract the data in the language it appears. We will handle translati
 RULES:
 
 * If a field is not mentioned in the text, DO NOT include it in the output JSON.
-* Do NOT hallucinate or infer missing information.
+* you are free to change the description to a friendly professional tone and structure
+* do not include any emojies and do no bold any text.
 * If a date is unclear or missing, omit that field entirely.
 * For benefits, extract as a list of strings.
 
 * For country AND eligible_nationalities — COUNTRY NAME NORMALIZATION IS CRITICAL:
   - ALWAYS use the standard short English name for every country. Examples:
     ✓ "USA"  (NOT "United States", "United States of America", "U.S.", "America")
-    ✓ "UK"   (NOT "United Kingdom", "Great Britain", "England")
-    ✓ "UAE"  (NOT "United Arab Emirates", "Emirates")
     ✓ "South Korea"  (NOT "Korea", "Republic of Korea")
     ✓ "Saudi Arabia"  (NOT "Kingdom of Saudi Arabia", "KSA")
-    ✓ "Czech Republic"  (NOT "Czechia")
-    ✓ "Netherlands"  (NOT "Holland", "The Netherlands")
     ✓ "Turkey"  (NOT "Türkiye")
   - For all other countries use the common short name: "Germany", "France", "Japan", "Egypt", "Canada", etc.
   - NEVER use formal/official names like "Federal Republic of Germany" or "Arab Republic of Egypt"
@@ -173,6 +170,8 @@ RULES:
 * type must not be null, if it is not a degree then it's non-academic
 * if program is not funded or doesn't state fund type then omit it
 * if program has several fund types add them to the array
+* min and max age must only be either a single int or null, if multible age critirias are there just include min of them and max of them , rest of details are in the eligibilty
+
 
 Return one JSON object per opportunity.
 If there are multiple opportunities in one document, return a JSON array with multiple objects.
