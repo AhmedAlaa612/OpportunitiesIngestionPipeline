@@ -57,7 +57,7 @@ def _init_clients():
         logger.warning("GROQ_API_KEY not set — skipping Groq client")
     if CEREBRAS_API_KEY:
         _CLIENTS.append({
-            "client": OpenAI(api_key=CEREBRAS_API_KEY, base_url="https://api.cerebras.ai/v1/"),
+            "client": OpenAI(api_key=CEREBRAS_API_KEY, base_url="https://api.groq.com/openai/v1"),
             "model": LLM_MODEL_CEREBRAS,
             "name": "cerebras",
         })
