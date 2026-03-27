@@ -58,7 +58,7 @@ def _init_clients():
     if CEREBRAS_API_KEY:
         _CLIENTS.append({
             "client": OpenAI(api_key=CEREBRAS_API_KEY, base_url="https://api.groq.com/openai/v1"),
-            "model": LLM_MODEL_CEREBRAS,
+            "model": LLM_MODEL_GROQ,
             "name": "cerebras",
         })
         logger.info("Cerebras client initialized")
